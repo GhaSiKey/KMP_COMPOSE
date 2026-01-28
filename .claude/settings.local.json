@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(.gradlew.bat tasks --group=build)",
+      "Bash(dir:*)",
+      "Bash(.\\\\gradlew.bat :composeApp:run:*)"
+    ]
+  }
+}
