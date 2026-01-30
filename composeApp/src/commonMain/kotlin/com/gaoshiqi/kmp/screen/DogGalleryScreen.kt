@@ -48,6 +48,7 @@ import coil3.compose.SubcomposeAsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.gaoshiqi.kmp.data.api.DogApi
+import com.gaoshiqi.kmp.getPlatform
 import kmp.composeapp.generated.resources.Res
 import kmp.composeapp.generated.resources.ic_arrow_back
 import kmp.composeapp.generated.resources.ic_refresh
@@ -83,6 +84,7 @@ fun DogGalleryScreen(
 ) {
     val scope = rememberCoroutineScope()
     val dogApi = remember { DogApi() }
+    val platform = remember { getPlatform() }
 
     // 图片列表状态
     var dogImages by remember { mutableStateOf<List<String>>(emptyList()) }
@@ -198,21 +200,12 @@ fun DogGalleryScreen(
         },
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
     ) { paddingValues ->
-        PullToRefreshBox(
-            isRefreshing = isRefreshing,
-            onRefresh = {
-                scope.launch { loadImages(isRefresh = true) }
-            },
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-        ) {
-            // 使用 BoxWithConstraints 获取容器尺寸，实现响应式布局
+        // 图片网格内容
+        val gridContent: @Composable () -> Unit = {
             BoxWithConstraints(
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.TopCenter
             ) {
-                // 图片网格 - 限制最大宽度，居中显示
                 LazyVerticalGrid(
                     columns = GridCells.Adaptive(minSize = CARD_MIN_WIDTH),
                     state = gridState,
@@ -225,12 +218,11 @@ fun DogGalleryScreen(
                 ) {
                     items(
                         count = dogImages.size,
-                        key = { index -> "$index-${dogImages[index]}" } // index + URL 避免重复
+                        key = { index -> "$index-${dogImages[index]}" }
                     ) { index ->
                         DogImageCard(dogImages[index])
                     }
 
-                    // 底部加载指示器 - 使用 maxLineSpan 动态获取当前列数
                     if (isLoadingMore) {
                         item(span = { GridItemSpan(maxLineSpan) }) {
                             Box(
@@ -244,6 +236,28 @@ fun DogGalleryScreen(
                         }
                     }
                 }
+            }
+        }
+
+        // 根据平台决定是否使用下拉刷新
+        if (platform.supportsPullToRefresh) {
+            PullToRefreshBox(
+                isRefreshing = isRefreshing,
+                onRefresh = { scope.launch { loadImages(isRefresh = true) } },
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues)
+            ) {
+                gridContent()
+            }
+        } else {
+            // 桌面/网页：不使用下拉刷新
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues)
+            ) {
+                gridContent()
             }
         }
     }
