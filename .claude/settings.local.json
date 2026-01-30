@@ -3,7 +3,12 @@
     "allow": [
       "Bash(.gradlew.bat tasks --group=build)",
       "Bash(dir:*)",
-      "Bash(.\\\\gradlew.bat :composeApp:run:*)"
+      "Bash(.\\\\gradlew.bat :composeApp:run:*)",
+      "Bash(tree:*)",
+      "Bash(find:*)",
+      "Bash(./gradlew:*)",
+      "WebSearch",
+      "Bash(chmod:*)"
     ]
   }
 }
