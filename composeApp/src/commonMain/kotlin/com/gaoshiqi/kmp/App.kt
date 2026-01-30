@@ -2,35 +2,42 @@ package com.gaoshiqi.kmp
 
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.tooling.preview.Preview
-import com.gaoshiqi.kmp.navigation.Screen
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.gaoshiqi.kmp.navigation.Route
 import com.gaoshiqi.kmp.screen.DogGalleryScreen
 import com.gaoshiqi.kmp.screen.HomeScreen
 
 /**
- * 应用入口 - 路由容器
+ * 应用入口 - Navigation 路由容器
  *
- * 使用 Compose 状态驱动路由：
- * - currentScreen 状态变化 → 触发重组 → 渲染对应页面
- * - 无需引入第三方路由库，适合简单导航场景
+ * NavHost 管理页面栈：
+ * - navController.navigate() 跳转（类似 startActivity）
+ * - navController.popBackStack() 返回（类似 finish）
  */
 @Composable
 @Preview
 fun App() {
     MaterialTheme {
-        var currentScreen by remember { mutableStateOf<Screen>(Screen.Home) }
+        val navController = rememberNavController()
 
-        when (currentScreen) {
-            Screen.Home -> HomeScreen(
-                onNavigateToDogGallery = { currentScreen = Screen.DogGallery }
-            )
-            Screen.DogGallery -> DogGalleryScreen(
-                onBack = { currentScreen = Screen.Home }
-            )
+        NavHost(
+            navController = navController,
+            startDestination = Route.HOME
+        ) {
+            composable(Route.HOME) {
+                HomeScreen(
+                    onNavigateToDogGallery = { navController.navigate(Route.DOG_GALLERY) }
+                )
+            }
+
+            composable(Route.DOG_GALLERY) {
+                DogGalleryScreen(
+                    onBack = { navController.popBackStack() }
+                )
+            }
         }
     }
 }

@@ -1,25 +1,27 @@
 package com.gaoshiqi.kmp.screen
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.TextButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -41,18 +43,28 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
-import coil3.compose.AsyncImage
 import coil3.compose.LocalPlatformContext
+import coil3.compose.SubcomposeAsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.gaoshiqi.kmp.data.api.DogApi
+import kmp.composeapp.generated.resources.Res
+import kmp.composeapp.generated.resources.ic_arrow_back
+import kmp.composeapp.generated.resources.ic_refresh
 import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.painterResource
 
 /** 每次加载的图片数量 */
 private const val PAGE_SIZE = 20
 
 /** 距离底部多少项时触发预加载 */
 private const val LOAD_MORE_THRESHOLD = 3
+
+/** 图片卡片最小宽度（用于自适应列数计算） */
+private val CARD_MIN_WIDTH = 160.dp
+
+/** 内容区域最大宽度（避免超宽屏上图片过大） */
+private val CONTENT_MAX_WIDTH = 1200.dp
 
 /**
  * 狗狗图片画廊页 - 无限流展示
@@ -160,8 +172,23 @@ fun DogGalleryScreen(
             TopAppBar(
                 title = { Text("Dog Gallery") },
                 navigationIcon = {
-                    TextButton(onClick = onBack) {
-                        Text("< 返回")
+                    IconButton(onClick = onBack) {
+                        Icon(
+                            painter = painterResource(Res.drawable.ic_arrow_back),
+                            contentDescription = "Back"
+                        )
+                    }
+                },
+                actions = {
+                    // Desktop/Web 友好的刷新按钮
+                    IconButton(
+                        onClick = { scope.launch { loadImages(isRefresh = true) } },
+                        enabled = !isRefreshing
+                    ) {
+                        Icon(
+                            painter = painterResource(Res.drawable.ic_refresh),
+                            contentDescription = "Refresh"
+                        )
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -180,32 +207,40 @@ fun DogGalleryScreen(
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
-            // 图片网格
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(2),
-                state = gridState,
+            // 使用 BoxWithConstraints 获取容器尺寸，实现响应式布局
+            BoxWithConstraints(
                 modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(16.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+                contentAlignment = Alignment.TopCenter
             ) {
-                items(
-                    count = dogImages.size,
-                    key = { index -> "$index-${dogImages[index]}" } // index + URL 避免重复
-                ) { index ->
-                    DogImageCard(dogImages[index])
-                }
+                // 图片网格 - 限制最大宽度，居中显示
+                LazyVerticalGrid(
+                    columns = GridCells.Adaptive(minSize = CARD_MIN_WIDTH),
+                    state = gridState,
+                    modifier = Modifier
+                        .widthIn(max = CONTENT_MAX_WIDTH)
+                        .fillMaxSize(),
+                    contentPadding = PaddingValues(16.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    items(
+                        count = dogImages.size,
+                        key = { index -> "$index-${dogImages[index]}" } // index + URL 避免重复
+                    ) { index ->
+                        DogImageCard(dogImages[index])
+                    }
 
-                // 底部加载指示器
-                if (isLoadingMore) {
-                    item(span = { GridItemSpan(2) }) {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(16.dp),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            CircularProgressIndicator(modifier = Modifier.size(32.dp))
+                    // 底部加载指示器 - 使用 maxLineSpan 动态获取当前列数
+                    if (isLoadingMore) {
+                        item(span = { GridItemSpan(maxLineSpan) }) {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(16.dp),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                CircularProgressIndicator(modifier = Modifier.size(32.dp))
+                            }
                         }
                     }
                 }
@@ -216,6 +251,8 @@ fun DogGalleryScreen(
 
 /**
  * 单张狗狗图片卡片
+ *
+ * 使用 SubcomposeAsyncImage 支持自定义 loading/error 状态
  */
 @Composable
 private fun DogImageCard(imageUrl: String) {
@@ -226,7 +263,7 @@ private fun DogImageCard(imageUrl: String) {
         shape = RoundedCornerShape(12.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
-        AsyncImage(
+        SubcomposeAsyncImage(
             model = ImageRequest.Builder(context)
                 .data(imageUrl)
                 .crossfade(true)
@@ -236,7 +273,36 @@ private fun DogImageCard(imageUrl: String) {
                 .fillMaxWidth()
                 .aspectRatio(1f)
                 .clip(RoundedCornerShape(12.dp)),
-            contentScale = ContentScale.Crop
+            contentScale = ContentScale.Crop,
+            loading = {
+                // 加载中：显示带背景色的 loading 指示器
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(MaterialTheme.colorScheme.surfaceVariant),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(24.dp),
+                        strokeWidth = 2.dp
+                    )
+                }
+            },
+            error = {
+                // 加载失败：显示错误占位符
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(MaterialTheme.colorScheme.errorContainer),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "Failed",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onErrorContainer
+                    )
+                }
+            }
         )
     }
 }
