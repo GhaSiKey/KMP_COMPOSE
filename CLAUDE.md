@@ -2,6 +2,16 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Developer Profile
+
+**背景：** 用户是一名经验丰富的 Android 开发工程师，但是 KMP（Kotlin Multiplatform）项目新手。
+
+**协作方式：**
+- 在完成需求的同时，主动解释 KMP 特有的概念和模式
+- 当涉及 `expect/actual`、跨平台源集（source sets）、平台特定代码等 KMP 核心概念时，提供简明扼要的说明
+- 对比 KMP 做法与纯 Android 开发的差异，帮助理解
+- 遇到常见的 KMP 陷阱或最佳实践时，及时提醒
+
 ## Project Overview
 
 Kotlin Multiplatform (KMP) project with Compose Multiplatform UI targeting Android, iOS, Web (Wasm/JS), Desktop (JVM), and Server (Ktor).
