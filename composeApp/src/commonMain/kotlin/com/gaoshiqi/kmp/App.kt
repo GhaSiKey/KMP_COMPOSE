@@ -7,6 +7,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.gaoshiqi.kmp.navigation.Route
+import com.gaoshiqi.kmp.screen.AnimeListScreen
 import com.gaoshiqi.kmp.screen.DogGalleryScreen
 import com.gaoshiqi.kmp.screen.HomeScreen
 
@@ -29,12 +30,19 @@ fun App() {
         ) {
             composable(Route.HOME) {
                 HomeScreen(
-                    onNavigateToDogGallery = { navController.navigate(Route.DOG_GALLERY) }
+                    onNavigateToDogGallery = { navController.navigate(Route.DOG_GALLERY) },
+                    onNavigateToAnimeList = { navController.navigate(Route.ANIME_LIST) }
                 )
             }
 
             composable(Route.DOG_GALLERY) {
                 DogGalleryScreen(
+                    onBack = { navController.popBackStack() }
+                )
+            }
+
+            composable(Route.ANIME_LIST) {
+                AnimeListScreen(
                     onBack = { navController.popBackStack() }
                 )
             }

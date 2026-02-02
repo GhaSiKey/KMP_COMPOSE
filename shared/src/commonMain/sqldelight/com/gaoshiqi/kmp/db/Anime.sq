@@ -1,0 +1,24 @@
+-- 番剧表
+-- SQLDelight 会根据此文件生成类型安全的 Kotlin 代码
+CREATE TABLE Anime (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    isWatched INTEGER AS kotlin.Boolean NOT NULL DEFAULT 0,
+    createdAt INTEGER NOT NULL
+);
+
+-- 查询所有番剧，按创建时间倒序
+selectAll:
+SELECT * FROM Anime ORDER BY createdAt DESC;
+
+-- 插入新番剧
+insert:
+INSERT INTO Anime (name, isWatched, createdAt) VALUES (?, ?, ?);
+
+-- 更新观看状态
+updateWatchedStatus:
+UPDATE Anime SET isWatched = ? WHERE id = ?;
+
+-- 根据 ID 删除
+deleteById:
+DELETE FROM Anime WHERE id = ?;

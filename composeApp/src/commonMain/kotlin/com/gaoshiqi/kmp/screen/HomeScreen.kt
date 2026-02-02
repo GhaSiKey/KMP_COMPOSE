@@ -34,10 +34,12 @@ import kmp.composeapp.generated.resources.compose_multiplatform
  * 首页 - 展示问候信息和导航入口
  *
  * @param onNavigateToDogGallery 点击 "Random Dogs" 时的回调
+ * @param onNavigateToAnimeList 点击 "追番列表" 时的回调
  */
 @Composable
 fun HomeScreen(
-    onNavigateToDogGallery: () -> Unit
+    onNavigateToDogGallery: () -> Unit,
+    onNavigateToAnimeList: () -> Unit = {}
 ) {
     var showContent by remember { mutableStateOf(false) }
     var currentDateTime by remember { mutableStateOf(getCurrentDateTime()) }
@@ -71,6 +73,10 @@ fun HomeScreen(
 
             Button(onClick = onNavigateToDogGallery) {
                 Text("Random Dogs")
+            }
+
+            Button(onClick = onNavigateToAnimeList) {
+                Text("追番列表")
             }
         }
 

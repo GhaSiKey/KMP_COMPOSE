@@ -13,4 +13,7 @@ object Route {
 
     /** 狗狗图片画廊 */
     const val DOG_GALLERY = "dogGallery"
+
+    /** 追番列表 */
+    const val ANIME_LIST = "animeList"
 }
