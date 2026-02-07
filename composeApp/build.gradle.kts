@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.composeHotReload)
+    alias(libs.plugins.kotlinxSerialization)
 }
 
 kotlin {
@@ -23,6 +24,8 @@ kotlin {
         iosTarget.binaries.framework {
             baseName = "ComposeApp"
             isStatic = true
+            // 链接 SQLite 库，SQLDelight Native Driver 需要
+            linkerOpts("-lsqlite3")
         }
     }
 
@@ -52,6 +55,7 @@ kotlin {
             implementation(libs.androidx.navigation.compose)
             implementation(libs.coil.compose)
             implementation(libs.coil.network.ktor3)
+            implementation(libs.mediaplayer.kmp)
             implementation(projects.shared)
         }
         commonTest.dependencies {

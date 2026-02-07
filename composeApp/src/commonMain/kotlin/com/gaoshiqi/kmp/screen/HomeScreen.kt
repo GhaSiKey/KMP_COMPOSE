@@ -11,6 +11,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -35,11 +37,13 @@ import kmp.composeapp.generated.resources.compose_multiplatform
  *
  * @param onNavigateToDogGallery 点击 "Random Dogs" 时的回调
  * @param onNavigateToAnimeList 点击 "追番列表" 时的回调
+ * @param onNavigateToVideoList 点击 "视频播放" 时的回调
  */
 @Composable
 fun HomeScreen(
     onNavigateToDogGallery: () -> Unit,
-    onNavigateToAnimeList: () -> Unit = {}
+    onNavigateToAnimeList: () -> Unit = {},
+    onNavigateToVideoList: () -> Unit = {}
 ) {
     var showContent by remember { mutableStateOf(false) }
     var currentDateTime by remember { mutableStateOf(getCurrentDateTime()) }
@@ -64,8 +68,10 @@ fun HomeScreen(
             style = MaterialTheme.typography.headlineSmall
         )
 
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        FlowRow(
+            modifier = Modifier.padding(horizontal = 16.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Button(onClick = { showContent = !showContent }) {
                 Text("Click me!")
@@ -77,6 +83,10 @@ fun HomeScreen(
 
             Button(onClick = onNavigateToAnimeList) {
                 Text("追番列表")
+            }
+
+            Button(onClick = onNavigateToVideoList) {
+                Text("视频播放")
             }
         }
 

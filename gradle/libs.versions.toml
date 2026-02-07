@@ -21,6 +21,7 @@ coil = "3.2.0"
 logback = "1.5.24"
 material3 = "1.10.0-alpha05"
 sqldelight = "2.0.2"
+mediaplayer-kmp = "2.0.9"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -66,6 +67,8 @@ sqldelight-coroutines = { module = "app.cash.sqldelight:coroutines-extensions", 
 sqldelight-driver-android = { module = "app.cash.sqldelight:android-driver", version.ref = "sqldelight" }
 sqldelight-driver-native = { module = "app.cash.sqldelight:native-driver", version.ref = "sqldelight" }
 sqldelight-driver-jvm = { module = "app.cash.sqldelight:sqlite-driver", version.ref = "sqldelight" }
+# MediaPlayer-KMP 跨平台视频播放
+mediaplayer-kmp = { module = "io.github.khubaibkhan4:mediaplayer-kmp", version.ref = "mediaplayer-kmp" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
