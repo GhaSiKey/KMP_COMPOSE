@@ -25,14 +25,14 @@ object VideoData {
         VideoItem(
             id = "1",
             title = "Big Buck Bunny",
-            url = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
-            thumbnailUrl = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/images/BigBuckBunny.jpg"
+            url = "https://media.w3.org/2010/05/sintel/trailer.mp4",
+            thumbnailUrl = null
         ),
         VideoItem(
             id = "2",
-            title = "Elephant Dream",
-            url = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
-            thumbnailUrl = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/images/ElephantsDream.jpg"
+            title = "测试视频 (W3C)",
+            url = "https://media.w3.org/2010/05/video/movie_300.mp4",
+            thumbnailUrl = null
         ),
         VideoItem(
             id = "3",
@@ -42,9 +42,9 @@ object VideoData {
         ),
         VideoItem(
             id = "4",
-            title = "Sintel Trailer",
-            url = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4",
-            thumbnailUrl = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/images/Sintel.jpg"
+            title = "Tears of Steel",
+            url = "https://download.blender.org/demo/movies/ToS/tears_of_steel_720p.mov",
+            thumbnailUrl = null
         )
     )
 

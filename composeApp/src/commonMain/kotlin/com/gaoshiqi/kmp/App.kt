@@ -15,6 +15,7 @@ import com.gaoshiqi.kmp.screen.DogGalleryScreen
 import com.gaoshiqi.kmp.screen.HomeScreen
 import com.gaoshiqi.kmp.screen.VideoListScreen
 import com.gaoshiqi.kmp.screen.VideoPlayerScreen
+import com.gaoshiqi.kmp.ui.appTypography
 
 /**
  * 应用入口 - Navigation 路由容器
@@ -26,7 +27,7 @@ import com.gaoshiqi.kmp.screen.VideoPlayerScreen
 @Composable
 @Preview
 fun App() {
-    MaterialTheme {
+    MaterialTheme(typography = appTypography()) {
         val navController = rememberNavController()
 
         NavHost(

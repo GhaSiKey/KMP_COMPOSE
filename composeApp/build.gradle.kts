@@ -1,6 +1,17 @@
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
+val osName: String = System.getProperty("os.name").lowercase()
+val osArch: String = System.getProperty("os.arch").lowercase()
+val javafxPlatform: String = when {
+    osName.contains("mac") && osArch.contains("aarch64") -> "mac-aarch64"
+    osName.contains("mac") -> "mac"
+    osName.contains("win") -> "win"
+    osName.contains("linux") && osArch.contains("aarch64") -> "linux-aarch64"
+    osName.contains("linux") -> "linux"
+    else -> error("Unsupported OS: $osName $osArch")
+}
+
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidApplication)
@@ -42,6 +53,9 @@ kotlin {
         androidMain.dependencies {
             implementation(libs.compose.uiToolingPreview)
             implementation(libs.androidx.activity.compose)
+            implementation(libs.media3.exoplayer)
+            implementation(libs.media3.exoplayer.hls)
+            implementation(libs.media3.ui)
         }
         commonMain.dependencies {
             implementation(libs.compose.runtime)
@@ -55,7 +69,7 @@ kotlin {
             implementation(libs.androidx.navigation.compose)
             implementation(libs.coil.compose)
             implementation(libs.coil.network.ktor3)
-            implementation(libs.mediaplayer.kmp)
+
             implementation(projects.shared)
         }
         commonTest.dependencies {
@@ -64,6 +78,10 @@ kotlin {
         jvmMain.dependencies {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutinesSwing)
+            val javafxVersion = "17.0.14"
+            listOf("base", "controls", "graphics", "media", "swing").forEach { module ->
+                implementation("org.openjfx:javafx-$module:$javafxVersion:$javafxPlatform")
+            }
         }
     }
 }

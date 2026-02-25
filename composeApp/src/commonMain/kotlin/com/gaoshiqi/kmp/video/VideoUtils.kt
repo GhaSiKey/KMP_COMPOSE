@@ -5,27 +5,6 @@ package com.gaoshiqi.kmp.video
  */
 
 /**
- * 将毫秒时间格式化为 mm:ss 或 hh:mm:ss 格式
- *
- * @param milliseconds 毫秒数
- * @return 格式化后的时间字符串
- */
-fun formatDuration(milliseconds: Long): String {
-    if (milliseconds <= 0) return "00:00"
-
-    val totalSeconds = milliseconds / 1000
-    val hours = totalSeconds / 3600
-    val minutes = (totalSeconds % 3600) / 60
-    val seconds = totalSeconds % 60
-
-    return if (hours > 0) {
-        String.format("%02d:%02d:%02d", hours, minutes, seconds)
-    } else {
-        String.format("%02d:%02d", minutes, seconds)
-    }
-}
-
-/**
  * 将秒数格式化为 mm:ss 或 hh:mm:ss 格式
  *
  * @param seconds 秒数
