@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Page Title -->
+    <string name="trending_title">Trending Anime</string>
+    
+    <!-- Loading Messages -->
+    <string name="trending_loading">Loading...</string>
+    <string name="trending_load_more">Load More</string>
+    <string name="trending_loading_more">Loading more...</string>
+    
+    <!-- Error Messages -->
+    <string name="trending_error_network">Network connection failed, please check your network settings</string>
+    <string name="trending_error_auth">Authentication failed, please login again</string>
+    <string name="trending_error_server">Server error, please try again later</string>
+    <string name="trending_error_unknown">Loading failed, please try again later</string>
+    <string name="trending_error_timeout">Request timeout, please try again later</string>
+    <string name="trending_error_parse">Data parsing failed, please try again later</string>
+    
+    <!-- Button Text -->
+    <string name="trending_retry">Retry</string>
+    <string name="trending_back">Back</string>
+    
+    <!-- List Information -->
+    <string name="trending_total">Total %d anime</string>
+    <string name="trending_score">Score: %s</string>
+    <string name="trending_rank">Rank: #%d</string>
+    <string name="trending_count">Popularity: %d</string>
+    <string name="trending_empty">No data available</string>
+</resources>

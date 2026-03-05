@@ -1,0 +1,34 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="120dp"
+    android:height="180dp"
+    android:viewportWidth="120"
+    android:viewportHeight="180">
+  
+  <!-- 背景 -->
+  <path
+      android:fillColor="#E0E0E0"
+      android:pathData="M0,0h120v180h-120z"/>
+  
+  <!-- 图片图标 -->
+  <path
+      android:fillColor="#9E9E9E"
+      android:pathData="M40,60h40v40h-40z"/>
+  
+  <!-- 山形装饰 -->
+  <path
+      android:fillColor="#BDBDBD"
+      android:pathData="M45,90l10,-15 10,15z"/>
+  
+  <!-- 太阳/月亮装饰 -->
+  <path
+      android:fillColor="#BDBDBD"
+      android:pathData="M70,70m-5,0a5,5 0,1,1 10,0a5,5 0,1,1 -10,0"/>
+  
+  <!-- 文字提示区域 -->
+  <path
+      android:fillColor="#BDBDBD"
+      android:pathData="M30,110h60v4h-60z"/>
+  <path
+      android:fillColor="#BDBDBD"
+      android:pathData="M40,120h40v4h-40z"/>
+</vector>

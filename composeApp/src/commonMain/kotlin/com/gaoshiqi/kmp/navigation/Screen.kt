@@ -21,6 +21,9 @@ object Route {
 
     /** 视频列表 */
     const val VIDEO_LIST = "videoList"
+
+    /** 番剧排行榜 */
+    const val TRENDING_LIST = "trendingList"
 }
 
 /**
@@ -33,3 +36,11 @@ object Route {
  */
 @Serializable
 data class VideoPlayerRoute(val videoId: String)
+
+/**
+ * 番剧详情页面路由（类型安全）
+ *
+ * @param subjectId 番剧 ID，用于加载番剧详细信息
+ */
+@Serializable
+data class SubjectDetailRoute(val subjectId: Int)

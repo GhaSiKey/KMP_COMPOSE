@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 页面标题 -->
+    <string name="trending_title">番剧排行榜</string>
+    
+    <!-- 加载提示 -->
+    <string name="trending_loading">加载中...</string>
+    <string name="trending_load_more">加载更多</string>
+    <string name="trending_loading_more">正在加载更多...</string>
+    
+    <!-- 错误消息 -->
+    <string name="trending_error_network">网络连接失败，请检查网络设置</string>
+    <string name="trending_error_auth">认证失败，请重新登录</string>
+    <string name="trending_error_server">服务器错误，请稍后重试</string>
+    <string name="trending_error_unknown">加载失败，请稍后重试</string>
+    <string name="trending_error_timeout">请求超时，请稍后重试</string>
+    <string name="trending_error_parse">数据解析失败，请稍后重试</string>
+    
+    <!-- 按钮文本 -->
+    <string name="trending_retry">重试</string>
+    <string name="trending_back">返回</string>
+    
+    <!-- 列表信息 -->
+    <string name="trending_total">共 %d 部番剧</string>
+    <string name="trending_score">评分: %s</string>
+    <string name="trending_rank">排名: #%d</string>
+    <string name="trending_count">热度: %d</string>
+    <string name="trending_empty">暂无数据</string>
+</resources>
