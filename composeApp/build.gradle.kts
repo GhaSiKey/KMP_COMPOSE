@@ -69,6 +69,7 @@ kotlin {
             implementation(libs.androidx.navigation.compose)
             implementation(libs.coil.compose)
             implementation(libs.coil.network.ktor3)
+            implementation(compose.materialIconsExtended)
 
             implementation(projects.shared)
         }

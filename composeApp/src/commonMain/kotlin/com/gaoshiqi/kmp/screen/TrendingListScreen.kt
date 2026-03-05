@@ -1,124 +1,31 @@
 package com.gaoshiqi.kmp.screen
 
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.hoverable
-import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Error
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import coil3.compose.AsyncImage
-import coil3.compose.LocalPlatformContext
-import coil3.request.ImageRequest
-import coil3.request.crossfade
-import com.gaoshiqi.kmp.data.model.TrendingSubjectItem
-import kmp.composeapp.generated.resources.Res
-import kmp.composeapp.generated.resources.placeholder_anime
-import org.jetbrains.compose.resources.painterResource
-import com.gaoshiqi.kmp.data.model.bestUrl
-import com.gaoshiqi.kmp.data.model.displayName
-import com.gaoshiqi.kmp.data.model.formattedScore
+import com.gaoshiqi.kmp.ui.trending.*
 import com.gaoshiqi.kmp.viewmodel.TrendingUiState
 import com.gaoshiqi.kmp.viewmodel.TrendingViewModel
 
 /**
- * 番剧列表项组件
- * 
- * @param item 番剧数据
- * @param onClick 点击回调
- */
-@Composable
-private fun TrendingSubjectCard(
-    item: TrendingSubjectItem,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    // 悬停效果支持（桌面/Web 平台）
-    val interactionSource = remember { MutableInteractionSource() }
-    val isHovered by interactionSource.collectIsHoveredAsState()
-    val context = LocalPlatformContext.current
-    
-    Card(
-        modifier = modifier
-            .fillMaxWidth()
-            .hoverable(interactionSource)
-            .clickable(onClick = onClick)
-            .padding(horizontal = 16.dp, vertical = 8.dp),
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = if (isHovered) 4.dp else 2.dp
-        )
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(12.dp),
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            // 封面图片
-            AsyncImage(
-                model = ImageRequest.Builder(context)
-                    .data(item.subject.images.bestUrl)
-                    .crossfade(true)
-                    .build(),
-                contentDescription = item.subject.displayName,
-                modifier = Modifier
-                    .width(80.dp)
-                    .height(120.dp),
-                contentScale = ContentScale.Crop,
-                placeholder = painterResource(Res.drawable.placeholder_anime),
-                error = painterResource(Res.drawable.placeholder_anime)
-            )
-            
-            // 番剧信息
-            Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxHeight(),
-                verticalArrangement = Arrangement.spacedBy(4.dp)
-            ) {
-                // 名称
-                Text(
-                    text = item.subject.displayName,
-                    style = MaterialTheme.typography.titleMedium,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis
-                )
-                
-                // 评分
-                Text(
-                    text = "评分: ${item.subject.rating.formattedScore}",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.primary
-                )
-                
-                // 排名
-                Text(
-                    text = "排名: #${item.subject.rating.rank}",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-                
-                // 热度
-                Text(
-                    text = "热度: ${item.count}",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
-        }
-    }
-}
-
-/**
  * 加载指示器（首次加载）
+ * 
+ * 设计规范：
+ * - 使用 48dp 尺寸的圆形进度指示器
+ * - 使用 Material3 主要颜色
+ * - 在进度指示器下方显示"加载中..."文本
+ * - 居中显示
  */
 @Composable
 private fun LoadingView(modifier: Modifier = Modifier) {
@@ -130,7 +37,10 @@ private fun LoadingView(modifier: Modifier = Modifier) {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            CircularProgressIndicator()
+            CircularProgressIndicator(
+                modifier = Modifier.size(48.dp),
+                color = MaterialTheme.colorScheme.primary
+            )
             Text(
                 text = "加载中...",
                 style = MaterialTheme.typography.bodyMedium,
@@ -142,6 +52,13 @@ private fun LoadingView(modifier: Modifier = Modifier) {
 
 /**
  * 错误视图（首次加载失败）
+ * 
+ * 设计规范：
+ * - 使用 64dp 尺寸的错误图标
+ * - 使用 Material3 错误颜色
+ * - 显示错误消息文本
+ * - 显示"重试"按钮
+ * - 居中显示
  * 
  * @param message 错误消息
  * @param onRetry 重试回调
@@ -161,6 +78,12 @@ private fun ErrorView(
             verticalArrangement = Arrangement.spacedBy(16.dp),
             modifier = Modifier.padding(32.dp)
         ) {
+            Icon(
+                imageVector = Icons.Default.Error,
+                contentDescription = "错误",
+                modifier = Modifier.size(64.dp),
+                tint = MaterialTheme.colorScheme.error
+            )
             Text(
                 text = message,
                 style = MaterialTheme.typography.bodyLarge,
@@ -175,6 +98,11 @@ private fun ErrorView(
 
 /**
  * 加载更多指示器（列表底部）
+ * 
+ * 设计规范：
+ * - 使用 24dp 尺寸和 2dp 线宽的圆形进度指示器
+ * - 显示"加载更多..."文本
+ * - 在列表底部显示
  */
 @Composable
 private fun LoadMoreIndicator(modifier: Modifier = Modifier) {
@@ -184,9 +112,20 @@ private fun LoadMoreIndicator(modifier: Modifier = Modifier) {
             .padding(16.dp),
         contentAlignment = Alignment.Center
     ) {
-        CircularProgressIndicator(
-            modifier = Modifier.size(32.dp)
-        )
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            CircularProgressIndicator(
+                modifier = Modifier.size(24.dp),
+                strokeWidth = 2.dp
+            )
+            Text(
+                text = "加载更多...",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
     }
 }
 
@@ -227,6 +166,14 @@ private fun LoadMoreErrorView(
 /**
  * 番剧排行榜页面
  * 
+ * 响应式布局特性：
+ * - COMPACT (< 600dp): LazyColumn + HorizontalTrendingCard
+ * - MEDIUM/EXPANDED (>= 600dp): LazyVerticalGrid + VerticalTrendingCard
+ * - 网格列数：1-4 列（根据屏幕宽度自动计算）
+ * - 统计信息栏显示总数
+ * - 列表项使用稳定的 key（番剧 ID）
+ * - 列表项指定 contentType 优化性能
+ * 
  * @param onBack 返回回调
  * @param onSubjectClick 番剧点击回调，传递番剧 ID
  */
@@ -239,6 +186,9 @@ fun TrendingListScreen(
     viewModel: TrendingViewModel = viewModel { TrendingViewModel() }
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val windowSizeClass = rememberWindowSizeClass()
+    val screenWidthDp = rememberWindowWidth().value.toInt()
+    val gridColumns = getGridColumns(screenWidthDp)
     
     Scaffold(
         modifier = modifier,
@@ -285,48 +235,128 @@ fun TrendingListScreen(
                 val isLoadingMore = state is TrendingUiState.LoadingMore
                 val loadMoreError = (state as? TrendingUiState.LoadMoreError)?.message
                 
-                // 渲染列表
-                LazyColumn(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(paddingValues)
-                ) {
-                    // 渲染番剧列表项
-                    items(
-                        items = items,
-                        key = { it.subject.id },
-                        contentType = { "TrendingSubject" }
-                    ) { item ->
-                        TrendingSubjectCard(
-                            item = item,
-                            onClick = { onSubjectClick(item.subject.id) }
-                        )
-                    }
-                    
-                    // 加载更多触发器
-                    if (hasMore && !isLoadingMore && loadMoreError == null) {
-                        item {
-                            LaunchedEffect(Unit) {
-                                viewModel.loadMore()
-                            }
-                            LoadMoreIndicator()
+                // 根据窗口尺寸选择布局
+                if (windowSizeClass == WindowSizeClass.COMPACT) {
+                    // 手机端：单列列表布局
+                    LazyColumn(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(paddingValues)
+                    ) {
+                        // 统计信息栏
+                        item(key = "statistics_bar", contentType = "StatisticsBar") {
+                            StatisticsBar(total = items.size)
                         }
-                    }
-                    
-                    // 加载更多中指示器
-                    if (isLoadingMore) {
-                        item {
-                            LoadMoreIndicator()
-                        }
-                    }
-                    
-                    // 加载更多错误提示
-                    if (loadMoreError != null) {
-                        item {
-                            LoadMoreErrorView(
-                                message = loadMoreError,
-                                onRetry = { viewModel.loadMore() }
+                        
+                        // 渲染番剧列表项
+                        items(
+                            items = items,
+                            key = { it.subject.id },
+                            contentType = { "HorizontalTrendingCard" }
+                        ) { item ->
+                            HorizontalTrendingCard(
+                                item = item,
+                                onClick = { onSubjectClick(item.subject.id) },
+                                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
                             )
+                        }
+                        
+                        // 加载更多触发器
+                        if (hasMore && !isLoadingMore && loadMoreError == null) {
+                            item(key = "load_more_trigger", contentType = "LoadMoreTrigger") {
+                                LaunchedEffect(Unit) {
+                                    viewModel.loadMore()
+                                }
+                                LoadMoreIndicator()
+                            }
+                        }
+                        
+                        // 加载更多中指示器
+                        if (isLoadingMore) {
+                            item(key = "loading_more", contentType = "LoadMoreIndicator") {
+                                LoadMoreIndicator()
+                            }
+                        }
+                        
+                        // 加载更多错误提示
+                        if (loadMoreError != null) {
+                            item(key = "load_more_error", contentType = "LoadMoreError") {
+                                LoadMoreErrorView(
+                                    message = loadMoreError,
+                                    onRetry = { viewModel.loadMore() }
+                                )
+                            }
+                        }
+                    }
+                } else {
+                    // 平板/桌面端：多列网格布局
+                    LazyVerticalGrid(
+                        columns = GridCells.Fixed(gridColumns),
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(paddingValues),
+                        contentPadding = PaddingValues(16.dp),
+                        horizontalArrangement = Arrangement.spacedBy(16.dp),
+                        verticalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        // 统计信息栏（跨所有列）
+                        item(
+                            key = "statistics_bar",
+                            span = { androidx.compose.foundation.lazy.grid.GridItemSpan(gridColumns) },
+                            contentType = "StatisticsBar"
+                        ) {
+                            StatisticsBar(total = items.size)
+                        }
+                        
+                        // 渲染番剧列表项
+                        items(
+                            items = items,
+                            key = { it.subject.id },
+                            contentType = { "VerticalTrendingCard" }
+                        ) { item ->
+                            VerticalTrendingCard(
+                                item = item,
+                                onClick = { onSubjectClick(item.subject.id) }
+                            )
+                        }
+                        
+                        // 加载更多触发器（跨所有列）
+                        if (hasMore && !isLoadingMore && loadMoreError == null) {
+                            item(
+                                key = "load_more_trigger",
+                                span = { androidx.compose.foundation.lazy.grid.GridItemSpan(gridColumns) },
+                                contentType = "LoadMoreTrigger"
+                            ) {
+                                LaunchedEffect(Unit) {
+                                    viewModel.loadMore()
+                                }
+                                LoadMoreIndicator()
+                            }
+                        }
+                        
+                        // 加载更多中指示器（跨所有列）
+                        if (isLoadingMore) {
+                            item(
+                                key = "loading_more",
+                                span = { androidx.compose.foundation.lazy.grid.GridItemSpan(gridColumns) },
+                                contentType = "LoadMoreIndicator"
+                            ) {
+                                LoadMoreIndicator()
+                            }
+                        }
+                        
+                        // 加载更多错误提示（跨所有列）
+                        if (loadMoreError != null) {
+                            item(
+                                key = "load_more_error",
+                                span = { androidx.compose.foundation.lazy.grid.GridItemSpan(gridColumns) },
+                                contentType = "LoadMoreError"
+                            ) {
+                                LoadMoreErrorView(
+                                    message = loadMoreError,
+                                    onRetry = { viewModel.loadMore() }
+                                )
+                            }
                         }
                     }
                 }
