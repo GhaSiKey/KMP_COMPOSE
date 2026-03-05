@@ -23,6 +23,7 @@ import com.gaoshiqi.kmp.screen.TrendingListScreen
 import com.gaoshiqi.kmp.screen.VideoListScreen
 import com.gaoshiqi.kmp.screen.VideoPlayerScreen
 import com.gaoshiqi.kmp.ui.appTypography
+import com.gaoshiqi.kmp.ui.flashlight.FlashlightScreen
 import com.gaoshiqi.kmp.util.createImageLoader
 
 /**
@@ -52,7 +53,8 @@ fun App() {
                     onNavigateToDogGallery = { navController.navigate(Route.DOG_GALLERY) },
                     onNavigateToAnimeList = { navController.navigate(Route.ANIME_LIST) },
                     onNavigateToVideoList = { navController.navigate(Route.VIDEO_LIST) },
-                    onNavigateToTrendingList = { navController.navigate(Route.TRENDING_LIST) }
+                    onNavigateToTrendingList = { navController.navigate(Route.TRENDING_LIST) },
+                    onNavigateToFlashlight = { navController.navigate(Route.FLASHLIGHT) }
                 )
             }
 
@@ -97,6 +99,12 @@ fun App() {
                         onBack = { navController.popBackStack() }
                     )
                 }
+            }
+
+            composable(Route.FLASHLIGHT) {
+                FlashlightScreen(
+                    onExit = { navController.popBackStack() }
+                )
             }
         }
     }

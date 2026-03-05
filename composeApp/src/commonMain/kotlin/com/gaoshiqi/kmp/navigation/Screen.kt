@@ -24,6 +24,9 @@ object Route {
 
     /** 番剧排行榜 */
     const val TRENDING_LIST = "trendingList"
+
+    /** 手电筒 */
+    const val FLASHLIGHT = "flashlight"
 }
 
 /**

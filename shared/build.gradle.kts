@@ -24,6 +24,17 @@ kotlin {
     }
 
     // 移除 wasmJs：SQLDelight 2.0.2 不支持
+    
+    // 启用内联类支持
+    targets.all {
+        compilations.all {
+            compileTaskProvider.configure {
+                compilerOptions {
+                    freeCompilerArgs.add("-Xinline-classes")
+                }
+            }
+        }
+    }
 
     sourceSets {
         commonMain.dependencies {

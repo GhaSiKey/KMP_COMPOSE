@@ -39,13 +39,15 @@ import kmp.composeapp.generated.resources.compose_multiplatform
  * @param onNavigateToAnimeList 点击 "追番列表" 时的回调
  * @param onNavigateToVideoList 点击 "视频播放" 时的回调
  * @param onNavigateToTrendingList 点击 "番剧排行榜" 时的回调
+ * @param onNavigateToFlashlight 点击 "手电筒" 时的回调
  */
 @Composable
 fun HomeScreen(
     onNavigateToDogGallery: () -> Unit,
     onNavigateToAnimeList: () -> Unit = {},
     onNavigateToVideoList: () -> Unit = {},
-    onNavigateToTrendingList: () -> Unit = {}
+    onNavigateToTrendingList: () -> Unit = {},
+    onNavigateToFlashlight: () -> Unit = {}
 ) {
     var showContent by remember { mutableStateOf(false) }
     var currentDateTime by remember { mutableStateOf(getCurrentDateTime()) }
@@ -93,6 +95,10 @@ fun HomeScreen(
 
             Button(onClick = onNavigateToTrendingList) {
                 Text("番剧排行榜")
+            }
+
+            Button(onClick = onNavigateToFlashlight) {
+                Text("手电筒")
             }
         }
 
