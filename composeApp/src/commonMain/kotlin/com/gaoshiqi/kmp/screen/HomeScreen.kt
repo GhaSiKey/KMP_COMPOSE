@@ -40,6 +40,8 @@ import kmp.composeapp.generated.resources.compose_multiplatform
  * @param onNavigateToVideoList 点击 "视频播放" 时的回调
  * @param onNavigateToTrendingList 点击 "番剧排行榜" 时的回调
  * @param onNavigateToFlashlight 点击 "手电筒" 时的回调
+ * @param onNavigateToLenticular 点击 "光栅卡" 时的回调
+ * @param onNavigateToTiltTest 点击 "传感器测试" 时的回调
  */
 @Composable
 fun HomeScreen(
@@ -47,7 +49,9 @@ fun HomeScreen(
     onNavigateToAnimeList: () -> Unit = {},
     onNavigateToVideoList: () -> Unit = {},
     onNavigateToTrendingList: () -> Unit = {},
-    onNavigateToFlashlight: () -> Unit = {}
+    onNavigateToFlashlight: () -> Unit = {},
+    onNavigateToLenticular: () -> Unit = {},
+    onNavigateToTiltTest: () -> Unit = {}
 ) {
     var showContent by remember { mutableStateOf(false) }
     var currentDateTime by remember { mutableStateOf(getCurrentDateTime()) }
@@ -99,6 +103,14 @@ fun HomeScreen(
 
             Button(onClick = onNavigateToFlashlight) {
                 Text("手电筒")
+            }
+
+            Button(onClick = onNavigateToLenticular) {
+                Text("光栅卡")
+            }
+
+            Button(onClick = onNavigateToTiltTest) {
+                Text("传感器测试")
             }
         }
 

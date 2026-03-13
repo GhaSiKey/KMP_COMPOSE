@@ -24,6 +24,10 @@ import com.gaoshiqi.kmp.screen.VideoListScreen
 import com.gaoshiqi.kmp.screen.VideoPlayerScreen
 import com.gaoshiqi.kmp.ui.appTypography
 import com.gaoshiqi.kmp.ui.flashlight.FlashlightScreen
+import com.gaoshiqi.kmp.ui.lenticular.LenticularEditScreen
+import com.gaoshiqi.kmp.ui.lenticular.LenticularPreviewScreen
+import com.gaoshiqi.kmp.ui.lenticular.TiltTestScreen
+import com.gaoshiqi.kmp.ui.lenticular.rememberLenticularViewModel
 import com.gaoshiqi.kmp.util.createImageLoader
 
 /**
@@ -44,6 +48,9 @@ fun App() {
     MaterialTheme(typography = appTypography()) {
         val navController = rememberNavController()
 
+        // 光栅卡 ViewModel 在 NavHost 外创建，编辑和预览界面共享同一实例
+        val lenticularViewModel = rememberLenticularViewModel()
+
         NavHost(
             navController = navController,
             startDestination = Route.HOME
@@ -54,7 +61,9 @@ fun App() {
                     onNavigateToAnimeList = { navController.navigate(Route.ANIME_LIST) },
                     onNavigateToVideoList = { navController.navigate(Route.VIDEO_LIST) },
                     onNavigateToTrendingList = { navController.navigate(Route.TRENDING_LIST) },
-                    onNavigateToFlashlight = { navController.navigate(Route.FLASHLIGHT) }
+                    onNavigateToFlashlight = { navController.navigate(Route.FLASHLIGHT) },
+                    onNavigateToLenticular = { navController.navigate(Route.LENTICULAR_EDIT) },
+                    onNavigateToTiltTest = { navController.navigate(Route.TILT_TEST) }
                 )
             }
 
@@ -104,6 +113,32 @@ fun App() {
             composable(Route.FLASHLIGHT) {
                 FlashlightScreen(
                     onExit = { navController.popBackStack() }
+                )
+            }
+
+            // 光栅卡编辑界面
+            composable(Route.LENTICULAR_EDIT) {
+                LenticularEditScreen(
+                    viewModel = lenticularViewModel,
+                    onPreview = {
+                        navController.navigate(Route.LENTICULAR_PREVIEW)
+                    },
+                    onBack = { navController.popBackStack() }
+                )
+            }
+
+            // 重力感应测试页面
+            composable(Route.TILT_TEST) {
+                TiltTestScreen(
+                    onBack = { navController.popBackStack() }
+                )
+            }
+
+            // 光栅卡全屏预览界面
+            composable(Route.LENTICULAR_PREVIEW) {
+                LenticularPreviewScreen(
+                    viewModel = lenticularViewModel,
+                    onBack = { navController.popBackStack() }
                 )
             }
         }

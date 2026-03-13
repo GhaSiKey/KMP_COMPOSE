@@ -27,6 +27,15 @@ object Route {
 
     /** 手电筒 */
     const val FLASHLIGHT = "flashlight"
+
+    /** 光栅卡编辑 */
+    const val LENTICULAR_EDIT = "lenticularEdit"
+
+    /** 光栅卡预览 */
+    const val LENTICULAR_PREVIEW = "lenticularPreview"
+
+    /** 重力感应测试 */
+    const val TILT_TEST = "tiltTest"
 }
 
 /**
